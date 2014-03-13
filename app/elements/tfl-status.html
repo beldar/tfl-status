@@ -1,7 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
 <link rel="import" href="../bower_components/polymer-ajax/polymer-ajax.html">
-<polymer-element name="polymer-tfl-status"  constructor="TflStatusElement" attributes="refresh width height">
+<polymer-element name="polymer-tfl-status"  constructor="TflStatusElement" attributes="url refresh width height">
   <template>
     <style>
       /* styles for the custom element itself - lowest specificity */
@@ -107,7 +107,7 @@
     .overground			{color: #FFF;  		background: #F86C00;}
     </style>
     <polymer-ajax id="status_data"
-                  url="LineStatus.xml"
+                  url="{{url}}"
                   auto="true"
                   handleAs="xml"
                   response="{{data}}"
@@ -138,6 +138,7 @@
     Polymer('polymer-tfl-status', {
       //applyAuthorStyles: true,
       //resetStyleInheritance: true,
+      url: 'LineStatus.xml',
       data: null,
       lines: [],
       refresh: 3000,
@@ -153,11 +154,6 @@
           }, this.refresh);
           this.$.container.style.width = this.width;
           this.$.container.style.height = this.height;
-      },
-      
-      prepareDisruptions: function() {
-          var uls = this.shadowRoot.querySelector('#line');//.querySelectorAll('ul.line-disruptions');//.getDistributedNodes();
-          console.log(uls.model);
       },
               
       stop: function() {

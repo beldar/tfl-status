@@ -58,6 +58,9 @@ And finally place the element where you want it using the attributes that you ne
     
 The refresh attribute defines how often the element should refresh the data feed in miliseconds. 
 
+
+The url attribute defines what url should the component go fetch the data, **since it cannot do a cross domain  request** it gets a local xml copy, you should have some backend service that fetches the information and writes it to that file, or just change the url for the url of your backend (ex. /fetchXml ).
+
 You can also define a with and height:
 
     <polymer-tfl-status refresh="5000" width="300px" height="500px"></polymer-tfl-status>
