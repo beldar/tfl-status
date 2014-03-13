@@ -521,7 +521,7 @@ license that can be found in the LICENSE file.
     .dlr                        {color: #FFF;  		background: #00BBB4;}
     .overground			{color: #FFF;  		background: #F86C00;}
     </style>
-    <polymer-ajax id="status_data" url="/LineStatus.xml" auto="true" handleas="xml" response="{{data}}" on-polymer-response="{{responseHandler}}"></polymer-ajax>
+    <polymer-ajax id="status_data" url="LineStatus.xml" auto="true" handleas="xml" response="{{data}}" on-polymer-response="{{responseHandler}}"></polymer-ajax>
     <div id="container" class="container">
         <ul class="lines">
             <template id="line" repeat="{{line in lines}}">
