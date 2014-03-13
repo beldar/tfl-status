@@ -564,11 +564,6 @@ license that can be found in the LICENSE file.
           this.$.container.style.width = this.width;
           this.$.container.style.height = this.height;
       },
-      
-      prepareDisruptions: function() {
-          var uls = this.shadowRoot.querySelector('#line');//.querySelectorAll('ul.line-disruptions');//.getDistributedNodes();
-          console.log(uls.model);
-      },
               
       stop: function() {
           clearInterval(this.interval);

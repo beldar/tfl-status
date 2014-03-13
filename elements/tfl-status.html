@@ -107,7 +107,7 @@
     .overground			{color: #FFF;  		background: #F86C00;}
     </style>
     <polymer-ajax id="status_data"
-                  url="http://cloud.tfl.gov.uk/TrackerNet/LineStatus"
+                  url="LineStatus.xml"
                   auto="true"
                   handleAs="xml"
                   response="{{data}}"
@@ -153,11 +153,6 @@
           }, this.refresh);
           this.$.container.style.width = this.width;
           this.$.container.style.height = this.height;
-      },
-      
-      prepareDisruptions: function() {
-          var uls = this.shadowRoot.querySelector('#line');//.querySelectorAll('ul.line-disruptions');//.getDistributedNodes();
-          console.log(uls.model);
       },
               
       stop: function() {
