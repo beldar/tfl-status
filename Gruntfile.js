@@ -209,7 +209,10 @@ module.exports = function (grunt) {
                         'elements/**',
                         'lib-elements/**',
                         'images/{,*/}*.{webp,gif}',
-                        'bower_components/platform/platform.js'
+                        'bower_components/platform/platform.js',
+                        'bower_components/polymer/*',
+                        'bower_components/polymer-ajax/*',
+                        'LineStatus.xml'
                     ]
                 }]
             }
