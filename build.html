@@ -17,8 +17,6 @@
         <script src="../app/bower_components/platform/platform.js"></script>
 
         
-        
-    
     </head>
     <body><polymer-element name="polymer-body" extends="body" assetpath="../app/bower_components/polymer/">
 
@@ -61,58 +59,6 @@
 <script src="../app/bower_components/polymer/polymer.js"></script>
 <!-- <link rel="import" href="../polymer-dev/polymer.html"> -->
 
-
-
-<polymer-element name="polymer-list" attributes="" assetpath="../app/elements/">
-  <template>
-    <style>
-      /* styles for the custom element itself - lowest specificity */
-      :host { display: block; }
-      /* 
-      style if an ancestor has the different class
-      :host(.different) { } 
-      */
-    </style>
-    <ul>
-      <template id="greeting" repeat="{{ item in items }}">
-        <li>{{ item }}</li>
-      </template>
-    </ul>
-  </template>
-  <script>
-    Polymer('polymer-list', {
-      ready: function() {
-        this.items = [
-          'HTML5 Boilerplate',
-          'Web Component Polyfills',
-          'Polymer'
-        ];
-      }
-    });
-  </script>
-</polymer-element>
-
-
-<polymer-element name="polymer-greeting" attributes="" assetpath="../app/elements/">
-  <template>
-    <style>
-      /* styles for the custom element itself - lowest specificity */
-      :host { display: block; }
-      /* 
-      style if an ancestor has the different class
-      :host(.different) { } 
-      */
-    </style>
-    <h1>{{ greeting }}, {{ greeting }}!</h1>
-    <span>Update text to change the greeting.</span>
-    <input type="text" value="{{ greeting }}">
-  </template>
-  <script>
-    Polymer('polymer-greeting', {
-      greeting : '\'Allo'
-    });
-  </script>
-</polymer-element>
 <!--
 Copyright 2013 The Polymer Authors. All rights reserved.
 Use of this source code is governed by a BSD-style
