@@ -1,6 +1,6 @@
 {
-  "name": "tfl-status",
-  "version": "0.0.0",
+  "name": "polymer-tfl-status",
+  "version": "0.0.1",
   "dependencies": {
     "sass-bootstrap": "~3.0.0",
     "polymer": "~0.2.1",
