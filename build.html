@@ -1,0 +1,706 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Polymer WebApp</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="styles/main.css">
+
+        <!-- Place your HTML imports here -->
+        <script src="../app/bower_components/platform/platform.js"></script>
+
+        
+        
+    
+    </head>
+    <body><polymer-element name="polymer-body" extends="body" assetpath="../app/bower_components/polymer/">
+
+  <script>
+
+  // upgrade polymer-body last so that it can contain other imported elements
+  document.addEventListener('polymer-ready', function() {
+    
+    Polymer('polymer-body', Platform.mixin({
+
+      created: function() {
+        this.template = document.createElement('template');
+        var body = wrap(document).body;
+        var c$ = body.childNodes.array();
+        for (var i=0, c; (c=c$[i]); i++) {
+          if (c.localName !== 'script') {
+            this.template.content.appendChild(c);
+          }
+        }
+        // snarf up user defined model
+        window.model = this;
+      },
+
+      parseDeclaration: function(elementElement) {
+        this.lightFromTemplate(this.template);
+      }
+
+    }, window.model));
+
+  });
+
+  </script>
+
+</polymer-element>
+<!--
+ Copyright 2013 The Polymer Authors. All rights reserved.
+ Use of this source code is governed by a BSD-style
+ license that can be found in the LICENSE file.
+-->
+<script src="../app/bower_components/polymer/polymer.js"></script>
+<!-- <link rel="import" href="../polymer-dev/polymer.html"> -->
+
+
+
+<polymer-element name="polymer-list" attributes="" assetpath="../app/elements/">
+  <template>
+    <style>
+      /* styles for the custom element itself - lowest specificity */
+      :host { display: block; }
+      /* 
+      style if an ancestor has the different class
+      :host(.different) { } 
+      */
+    </style>
+    <ul>
+      <template id="greeting" repeat="{{ item in items }}">
+        <li>{{ item }}</li>
+      </template>
+    </ul>
+  </template>
+  <script>
+    Polymer('polymer-list', {
+      ready: function() {
+        this.items = [
+          'HTML5 Boilerplate',
+          'Web Component Polyfills',
+          'Polymer'
+        ];
+      }
+    });
+  </script>
+</polymer-element>
+
+
+<polymer-element name="polymer-greeting" attributes="" assetpath="../app/elements/">
+  <template>
+    <style>
+      /* styles for the custom element itself - lowest specificity */
+      :host { display: block; }
+      /* 
+      style if an ancestor has the different class
+      :host(.different) { } 
+      */
+    </style>
+    <h1>{{ greeting }}, {{ greeting }}!</h1>
+    <span>Update text to change the greeting.</span>
+    <input type="text" value="{{ greeting }}">
+  </template>
+  <script>
+    Polymer('polymer-greeting', {
+      greeting : '\'Allo'
+    });
+  </script>
+</polymer-element>
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE file.
+-->
+<!--
+/**
+ * @module Polymer Elements
+ */
+/**
+ * polymer-xhr can be used to perform XMLHttpRequests.
+ 
+ * Example:
+ *
+ *     <polymer-xhr id="xhr"></polymer-xhr>
+ *     ...
+ *     this.$.xhr.request({url: url, params: params, callback: callback});
+ *
+ * @class polymer-xhr
+ */
+-->
+
+
+<polymer-element name="polymer-xhr" assetpath="../app/bower_components/polymer-ajax/">
+  <template>
+    <style>
+      :host {
+        display: none;
+      }
+    </style>
+  </template>
+  <script>
+    Polymer('polymer-xhr', {
+      makeReadyStateHandler: function(xhr, callback) {
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState == 4) {
+            callback && callback.call(null, xhr.response, xhr);
+          }
+        };
+      },
+      setRequestHeaders: function(xhr, headers) {
+        if (headers) {
+          for (var name in headers) {
+            xhr.setRequestHeader(name, headers[name]);
+          }
+        }
+      },
+      toQueryString: function(params) {
+        var r = [];
+        for (var n in params) {
+          var v = params[n];
+          n = encodeURIComponent(n);
+          r.push(v == null ? n : (n + '=' + encodeURIComponent(v)));
+        }
+        return r.join('&');
+      },
+      /**
+       * Sends a HTTP request to the server and returns the XHR object.
+       *
+       * @method request
+       * @param {Object} inOptions
+       *    @param {String} inOptions.url The url to which the request is sent.
+       *    @param {String} inOptions.method The HTTP method to use, default is GET.
+       *    @param {boolean} inOptions.sync By default, all requests are sent asynchronously.
+       *        To send synchronous requests, set to true.
+       *    @param {Object} inOptions.params Data to be sent to the server.
+       *    @param {Object} inOptions.body The content for the request body for POST method.
+       *    @param {Object} inOptions.headers HTTP request headers.
+       *    @param {String} inOptions.responseType The response type. Default is 'text'.
+       *    @param {Object} inOptions.callback Called when request is completed.
+       * @returns {Object} XHR object.
+       */
+      request: function(options) {
+        var xhr = new XMLHttpRequest();
+        var url = options.url;
+        var method = options.method || 'GET';
+        var async = !options.sync;
+        var params = this.toQueryString(options.params);
+        if (params && method == 'GET') {
+          url += (url.indexOf('?') > 0 ? '&' : '?') + params;
+        }
+        xhr.open(method, url, async);
+        if (options.responseType) {
+          xhr.responseType = options.responseType;
+        }
+        this.makeReadyStateHandler(xhr, options.callback);
+        this.setRequestHeaders(xhr, options.headers);
+        xhr.send(method == 'POST' ? (options.body || params) : null);
+        if (!async) {
+          xhr.onreadystatechange(xhr);
+        }
+        return xhr;
+      }
+    });
+  </script>
+</polymer-element>
+
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE file.
+-->
+<!--
+/**
+ * @module Polymer Elements
+ */
+ 
+/**
+ * The `polymer-ajax` element performs `XMLHttpRequest`s.
+ * 
+ * You can trigger a request explicitly by calling `go` on the
+ * element. 
+ * 
+ * With `auto` set to `true`, the element performs a request whenever
+ * its `url` or `params` properties are changed.
+ * 
+ *
+ * Example:
+ *
+ *     <polymer-ajax auto url="http://gdata.youtube.com/feeds/api/videos/" 
+ *         params='{"alt":"json", "q":"chrome"}'
+ *         handleAs="json"
+ *         on-polymer-response="{{handleResponse}}">
+ *     </polymer-ajax>
+ * 
+ * Note: The `params` attribute must be double quoted JSON.
+ *
+ * @class polymer-ajax
+ * @status beta
+ * @homepage github.io
+ *
+ */
+ 
+/**
+ * Fired when a response is received.
+ * 
+ * @event polymer-response
+ */
+ 
+/**
+ * Fired when an error is received.
+ * 
+ * @event polymer-error
+ */
+ 
+/**
+ * Fired whenever a response or an error is received.
+ *
+ * @event polymer-complete
+ */
+ 
+-->
+
+
+
+<polymer-element name="polymer-ajax" attributes="url handleAs auto params response method headers body contentType" assetpath="../app/bower_components/polymer-ajax/">
+  <script>
+    Polymer('polymer-ajax', {
+      /**
+       * The URL target of the request.
+       * 
+       * @attribute url
+       * @type string
+       * @default ''
+       */
+      url: '',
+      /**
+       * Specifies what data to store in the `response` property, and
+       * to deliver as `event.response` in `response` events.
+       * 
+       * One of:
+       * 
+       *    `text`: uses `XHR.responseText`.
+       *    
+       *    `xml`: uses `XHR.responseXML`.
+       *    
+       *    `json`: uses `XHR.responseText` parsed as JSON.
+       *  
+       * @attribute handleAs
+       * @type string
+       * @default 'text'
+       */
+      handleAs: '',
+      /**
+       * If true, automatically performs an Ajax request when either `url` or `params` changes.
+       *
+       * @attribute auto
+       * @type boolean
+       * @default false
+       */
+      auto: false,
+      /**
+       * Parameters to send to the specified URL, as JSON.
+       *  
+       * @attribute params
+       * @type string (JSON)
+       * @default ''
+       */
+      params: '',
+      /**
+       * Returns the response object.
+       *
+       * @attribute response
+       * @type Object
+       * @default null
+       */
+      response: null,
+      /**
+       * The HTTP method to use such as 'GET', 'POST', 'PUT', or 'DELETE'.
+       * Default is 'GET'.
+       *
+       * @attribute method
+       * @type string
+       * @default ''
+       */
+      method: '',
+      /**
+       * HTTP request headers to send.
+       *
+       * Example:
+       *
+       *     <polymer-ajax auto url="http://somesite.com"
+       *         headers='{"X-Requested-With": "XMLHttpRequest"}'
+       *         handleAs="json"
+       *         on-polymer-response="{{handleResponse}}">
+       *     </polymer-ajax>
+       *  
+       * @attribute headers
+       * @type Object
+       * @default null
+       */
+      headers: null,
+      /**
+       * Optional raw body content to send when method === "POST".
+       *
+       * Example:
+       *
+       *     <polymer-ajax method="POST" auto url="http://somesite.com"
+       *         body='{"foo":1, "bar":2}'>
+       *     </polymer-ajax>
+       *  
+       * @attribute body
+       * @type Object
+       * @default null
+       */
+      body: null,
+      /**
+       * Content type to use when sending data.
+       *
+       * @attribute contentType
+       * @type string
+       * @default 'application/x-www-form-urlencoded'
+       */
+      contentType: 'application/x-www-form-urlencoded',
+      ready: function() {
+        this.xhr = document.createElement('polymer-xhr');
+      },
+      receive: function(response, xhr) {
+        if (this.isSuccess(xhr)) {
+          this.processResponse(xhr);
+        } else {
+          this.error(xhr);
+        }
+        this.complete(xhr);
+      },
+      isSuccess: function(xhr) {
+        var status = xhr.status || 0;
+        return !status || (status >= 200 && status < 300);
+      },
+      processResponse: function(xhr) {
+        var response = this.evalResponse(xhr);
+        this.response = response;
+        this.fire('polymer-response', {response: response, xhr: xhr});
+      },
+      error: function(xhr) {
+        var response = xhr.status + ': ' + xhr.responseText;
+        this.fire('polymer-error', {response: response, xhr: xhr});
+      },
+      complete: function(xhr) {
+        this.fire('polymer-complete', {response: xhr.status, xhr: xhr});
+      },
+      evalResponse: function(xhr) {
+        return this[(this.handleAs || 'text') + 'Handler'](xhr);
+      },
+      xmlHandler: function(xhr) {
+        return xhr.responseXML;
+      },
+      textHandler: function(xhr) {
+        return xhr.responseText;
+      },
+      jsonHandler: function(xhr) {
+        var r = xhr.responseText;
+        try {
+          return JSON.parse(r);
+        } catch (x) {
+          return r;
+        }
+      },
+      urlChanged: function() {
+        if (!this.handleAs) {
+          var ext = String(this.url).split('.').pop();
+          switch (ext) {
+            case 'json':
+              this.handleAs = 'json';
+              break;
+          }
+        }
+        this.autoGo();
+      },
+      paramsChanged: function() {
+        this.autoGo();
+      },
+      autoChanged: function() {
+        this.autoGo();
+      },
+      // TODO(sorvell): multiple side-effects could call autoGo 
+      // during one micro-task, use a job to have only one action 
+      // occur
+      autoGo: function() {
+        if (this.auto) {
+          this.goJob = this.job(this.goJob, this.go, 0);
+        }
+      },
+      /**
+       * Performs an Ajax request to the specified URL.
+       *
+       * @method go
+       */
+      go: function() {
+        var args = this.xhrArgs || {};
+        // TODO(sjmiles): alternatively, we could force POST if body is set
+        if (this.method === 'POST') {
+          args.body = this.body || args.body;
+        }
+        args.params = this.params || args.params;
+        if (args.params && typeof(args.params) == 'string') {
+          args.params = JSON.parse(args.params);
+        }
+        args.headers = this.headers || args.headers || {};
+        if (args.headers && typeof(args.headers) == 'string') {
+          args.headers = JSON.parse(args.headers);
+        }
+        if (this.contentType) {
+          args.headers['content-type'] = this.contentType;
+        }
+        args.callback = this.receive.bind(this);
+        args.url = this.url;
+        args.method = this.method;
+        return args.url && this.xhr.request(args);
+      }
+    });
+  </script>
+</polymer-element>
+
+
+
+
+<polymer-element name="polymer-tfl-status" constructor="TflStatusElement" attributes="refresh width height" assetpath="../app/elements/">
+  <template>
+    <style>
+      /* styles for the custom element itself - lowest specificity */
+      :host { display: block; position:relative; }
+      /* 
+      style if an ancestor has the different class
+      :host(.different) { } 
+      */
+      .container {
+            width: 100%;
+            padding: 0;
+      }
+      ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            display: block;
+            height: 100%;
+      }
+      ul li {
+            display: table;
+            height: 7.69%;
+            width: 100%;
+            border-bottom: 1px solid #eee;
+            -webkit-transition: all 1s;
+            -moz-transition: all 1s;
+            transition: all 1s;
+            color: #565656;
+            position: relative;
+      }
+      ul.lines li.line .line-label {
+          display: table-cell;
+          vertical-align: middle;
+          width: 100%;
+      }
+      ul.lines li.line span {
+          font-size: 1.2em;
+          line-height: 2.2em;
+          height: 100%;
+          width: 50%;
+          display: block;
+          float:left;
+          padding-left: 1em;
+          position: relative;
+      }
+      ul.lines ul.line-disruptions {
+        position: absolute;
+        left: 50%;
+        width: 50%;
+        top: 2.5em;
+        background: white;
+        display: block;
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        opacity: 0;
+        transition: opacity 1s;
+        -webkit-transition: opacity 1s;
+        border: 1px solid rgb(239, 74, 74);
+      }
+      ul.lines ul.line-disruptions li {
+          height: auto;
+          padding: 10px;
+      }
+      .GoodService {
+          color: rgb(122, 139, 19);
+      }
+      .DisruptedService {
+          color: rgb(239, 74, 74);
+      }
+      .line-status.DisruptedService {
+          cursor:pointer;
+      }
+      .line-status.DisruptedService:after {
+          content: "";
+          position:absolute;
+          top: 50%;
+          right: 5px;
+          margin-top: -5px;
+          width: 0px;
+          height: 0px;
+          border-style: solid;
+          border-width: 8.7px 5px 0 5px;
+          border-color: rgb(239, 74, 74) transparent transparent transparent;
+      }
+      .line.DisruptedService:hover > ul.line-disruptions {
+          opacity: 1;
+          z-index: 10;
+      }
+    .bakerloo			{color: #FFF;  		background: #AE6118;}
+    .central			{color: #FFF;  		background: #E41F1F;}
+    .circle			{color: #113B92;  	background: #F8D42D;}
+    .district			{color: #FFF; 		background: #007229;}
+    .eastlondon                 {color: #113B92;  	background: #F2AD41;}
+    .hammersmithandcity		{color: #113B92;  	background: #E899A8;}
+    .jubilee			{color: #FFF;  		background: #686e72;}
+    .metropolitan		{color: #FFF;  		background: #893267;}
+    .northern			{color: #FFF;  		background: #000000;}
+    .piccadilly			{color: #FFF;  		background: #0450A1;}
+    .victoria			{color: #FFF;  		background: #009FE0;}
+    .waterlooandcity		{color: #113B92;  	background: #70C3CE;}
+    .dlr                        {color: #FFF;  		background: #00BBB4;}
+    .overground			{color: #FFF;  		background: #F86C00;}
+    </style>
+    <polymer-ajax id="status_data" url="/LineStatus.xml" auto="true" handleas="xml" response="{{data}}" on-polymer-response="{{responseHandler}}"></polymer-ajax>
+    <div id="container" class="container">
+        <ul class="lines">
+            <template id="line" repeat="{{line in lines}}">
+                <li class="line {{line.class}}">
+                    <div class="line-label">
+                        <span class="line-name {{line.nameclass}}">
+                            {{line.name}}
+                        </span>
+                        <span class="line-status {{line.class}}">
+                            {{line.status}}
+                        </span>
+                    </div>
+                    <ul class="line-disruptions">
+                        <template id="disruption" repeat="{{disruption in line.disruptions}}">
+                            <li class="line-disruption {{disruption.class}}">{{disruption.from}} to {{disruption.to}}: {{disruption.status}}</li>
+                        </template>
+                    </ul>
+                </li>
+            </template>
+        </ul>
+    </div>
+  </template>
+  <script>
+    Polymer('polymer-tfl-status', {
+      //applyAuthorStyles: true,
+      //resetStyleInheritance: true,
+      data: null,
+      lines: [],
+      refresh: 3000,
+      interval: null,
+      width: '100%',
+      height: 'auto',
+      // element is fully prepared
+      ready: function(){
+          var that = this;
+          this.interval = 
+          setInterval(function(){
+              that.$.status_data.go();
+          }, this.refresh);
+          this.$.container.style.width = this.width;
+          this.$.container.style.height = this.height;
+      },
+      
+      prepareDisruptions: function() {
+          var uls = this.shadowRoot.querySelector('#line');//.querySelectorAll('ul.line-disruptions');//.getDistributedNodes();
+          console.log(uls.model);
+      },
+              
+      stop: function() {
+          clearInterval(this.interval);
+      },
+              
+      responseHandler: function(e) {
+        this.lines = [];
+        var lineStatus = this.data.getElementsByTagName('LineStatus');
+        //console.log(lineStatus);
+        for (var i = 0; i<lineStatus.length;i++) {
+            var ls = lineStatus[i];
+            var line = {};
+            var disruptions = ls.getElementsByTagName('BranchDisruptions')[0];
+            if (disruptions.getElementsByTagName('BranchDisruption').length > 0) {
+                var disrupts = disruptions.getElementsByTagName('BranchDisruption');
+                var disobj = [];
+                for (var j = 0;j < disrupts.length; j++) {
+                    var dis = {};
+                    dis.from = disrupts[j].getElementsByTagName('StationFrom')[0].getAttribute('Name');
+                    dis.to = disrupts[j].getElementsByTagName('StationTo')[0].getAttribute('Name');
+                    dis.status = disrupts[j].getElementsByTagName('Status')[0].getAttribute('Description');
+                    dis.class = disrupts[j].getElementsByTagName('Status')[0].getAttribute('CssClass');
+                    disobj.push(dis);
+                }
+                line.disruptions = disobj;
+            }
+            line.name = ls.getElementsByTagName('Line')[0].getAttribute('Name');
+            line.class = ls.getElementsByTagName('Status')[0].getAttribute('CssClass');
+            line.nameclass = line.name.toLowerCase().replace(/ /g,"");
+            line.status = ls.getElementsByTagName('Status')[0].getAttribute('Description');
+            this.lines.push(line);
+        }
+      }
+
+    });
+  </script>
+</polymer-element>
+
+
+        
+        <div class="container">
+            <div class="header">
+                <h3 class="text-muted">TFL-Status Component</h3>
+            </div>
+
+
+            <div class="row marketing">
+                <div class="col-lg-12">
+                    <h4>The Component</h4>
+                    <p> 
+                     
+                        <polymer-tfl-status refresh="5000"></polymer-tfl-status>
+                
+                    </p>
+
+                    <h4>Bootstrap</h4>
+                    <p>Sleek, intuitive, and powerful mobile first front-end framework for faster and easier web development.</p>
+
+                    <h4>Platform.js</h4>
+                    <p>Web Component polyfills for Custom Elements, HTML Imports, Templates and ShadowDOM.</p>
+
+                    <h4>Polymer</h4>
+                    <p>A new type of library for the web, built on top of Web Components, and designed to leverage the evolving web platform on modern browsers.</p>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>by <a title="Beldar on Github" href="https://github.com/beldar">beldar</a></p>
+            </div>
+
+        </div>
+        
+
+      <script>
+        document.addEventListener('WebComponentsReady', function() {
+            // Perform some behaviour
+        });
+      </script>
+          
+    </body>
+</html>
