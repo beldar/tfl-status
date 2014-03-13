@@ -54,7 +54,7 @@ Then, just below import the html of the element:
     
 And finally place the element where you want it using the attributes that you need:
 
-    <polymer-tfl-status refresh="5000"></polymer-tfl-status>
+    <polymer-tfl-status refresh="5000" url="LineStatus.xml"></polymer-tfl-status>
     
 The refresh attribute defines how often the element should refresh the data feed in miliseconds. 
 
