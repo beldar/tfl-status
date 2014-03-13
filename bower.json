@@ -4,7 +4,8 @@
   "dependencies": {
     "sass-bootstrap": "~3.0.0",
     "polymer": "~0.2.1",
-    "polymer-ajax": "Polymer/polymer-ajax#~0.2.1"
+    "polymer-ajax": "Polymer/polymer-ajax#~0.2.1",
+    "platform": "Polymer/platform#~0.2.1"
   },
   "devDependencies": {}
 }
