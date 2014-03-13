@@ -1,6 +1,21 @@
 {
   "name": "polymer-tfl-status",
   "version": "0.0.1",
+  "homepage": "https://github.com/beldar/polymer-tfl-status",
+  "autors" : [
+    "Martí Planellas <beldar.cat@gmail.com>"
+  ],
+  "description" : "A Polymer element for fetching and rendering the London TFL Tube Status feed",
+  "main" : "tfl-status.html",
+  "keywords" : [
+    "web-component",
+    "web-components",
+    "polymer",
+    "tfl",
+    "tube",
+    "london"
+  ],
+  "license" : "MIT",
   "dependencies": {
     "sass-bootstrap": "~3.0.0",
     "polymer": "~0.2.1",

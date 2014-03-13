@@ -1,0 +1,194 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/polymer-ajax/polymer-ajax.html">
+<polymer-element name="polymer-tfl-status"  constructor="TflStatusElement" attributes="url refresh width height">
+  <template>
+    <style>
+      /* styles for the custom element itself - lowest specificity */
+      :host { display: block; position:relative; }
+      /* 
+      style if an ancestor has the different class
+      :host(.different) { } 
+      */
+      .container {
+            width: 100%;
+            padding: 0;
+      }
+      ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            display: block;
+            height: 100%;
+      }
+      ul li {
+            display: table;
+            height: 7.69%;
+            width: 100%;
+            border-bottom: 1px solid #eee;
+            -webkit-transition: all 1s;
+            -moz-transition: all 1s;
+            transition: all 1s;
+            color: #565656;
+            position: relative;
+      }
+      ul.lines li.line .line-label {
+          display: table-cell;
+          vertical-align: middle;
+          width: 100%;
+      }
+      ul.lines li.line span {
+          font-size: 1.2em;
+          line-height: 2.2em;
+          height: 100%;
+          width: 50%;
+          display: block;
+          float:left;
+          padding-left: 1em;
+          position: relative;
+      }
+      ul.lines ul.line-disruptions {
+        position: absolute;
+        left: 50%;
+        width: 50%;
+        top: 2.5em;
+        background: white;
+        display: block;
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        opacity: 0;
+        transition: opacity 1s;
+        -webkit-transition: opacity 1s;
+        border: 1px solid rgb(239, 74, 74);
+      }
+      ul.lines ul.line-disruptions li {
+          height: auto;
+          padding: 10px;
+      }
+      .GoodService {
+          color: rgb(122, 139, 19);
+      }
+      .DisruptedService {
+          color: rgb(239, 74, 74);
+      }
+      .line-status.DisruptedService {
+          cursor:pointer;
+      }
+      .line-status.DisruptedService:after {
+          content: "";
+          position:absolute;
+          top: 50%;
+          right: 5px;
+          margin-top: -5px;
+          width: 0px;
+          height: 0px;
+          border-style: solid;
+          border-width: 8.7px 5px 0 5px;
+          border-color: rgb(239, 74, 74) transparent transparent transparent;
+      }
+      .line.DisruptedService:hover > ul.line-disruptions {
+          opacity: 1;
+          z-index: 10;
+      }
+    .bakerloo			{color: #FFF;  		background: #AE6118;}
+    .central			{color: #FFF;  		background: #E41F1F;}
+    .circle			{color: #113B92;  	background: #F8D42D;}
+    .district			{color: #FFF; 		background: #007229;}
+    .eastlondon                 {color: #113B92;  	background: #F2AD41;}
+    .hammersmithandcity		{color: #113B92;  	background: #E899A8;}
+    .jubilee			{color: #FFF;  		background: #686e72;}
+    .metropolitan		{color: #FFF;  		background: #893267;}
+    .northern			{color: #FFF;  		background: #000000;}
+    .piccadilly			{color: #FFF;  		background: #0450A1;}
+    .victoria			{color: #FFF;  		background: #009FE0;}
+    .waterlooandcity		{color: #113B92;  	background: #70C3CE;}
+    .dlr                        {color: #FFF;  		background: #00BBB4;}
+    .overground			{color: #FFF;  		background: #F86C00;}
+    </style>
+    <polymer-ajax id="status_data"
+                  url="{{url}}"
+                  auto="true"
+                  handleAs="xml"
+                  response="{{data}}"
+                  on-polymer-response="{{responseHandler}}"></polymer-ajax>
+    <div id="container" class="container">
+        <ul class="lines">
+            <template id="line" repeat="{{line in lines}}">
+                <li class="line {{line.class}}">
+                    <div class="line-label">
+                        <span class="line-name {{line.nameclass}}">
+                            {{line.name}}
+                        </span>
+                        <span class="line-status {{line.class}}">
+                            {{line.status}}
+                        </span>
+                    </div>
+                    <ul class="line-disruptions">
+                        <template id="disruption" repeat="{{disruption in line.disruptions}}">
+                            <li class="line-disruption {{disruption.class}}">{{disruption.from}} to {{disruption.to}}: {{disruption.status}}</li>
+                        </template>
+                    </ul>
+                </li>
+            </template>
+        </ul>
+    </div>
+  </template>
+  <script>
+    Polymer('polymer-tfl-status', {
+      //applyAuthorStyles: true,
+      //resetStyleInheritance: true,
+      url: 'LineStatus.xml',
+      data: null,
+      lines: [],
+      refresh: 3000,
+      interval: null,
+      width: '100%',
+      height: 'auto',
+      // element is fully prepared
+      ready: function(){
+          var that = this;
+          this.interval = 
+          setInterval(function(){
+              that.$.status_data.go();
+          }, this.refresh);
+          this.$.container.style.width = this.width;
+          this.$.container.style.height = this.height;
+      },
+              
+      stop: function() {
+          clearInterval(this.interval);
+      },
+              
+      responseHandler: function(e) {
+        this.lines = [];
+        var lineStatus = this.data.getElementsByTagName('LineStatus');
+        //console.log(lineStatus);
+        for (var i = 0; i<lineStatus.length;i++) {
+            var ls = lineStatus[i];
+            var line = {};
+            var disruptions = ls.getElementsByTagName('BranchDisruptions')[0];
+            if (disruptions.getElementsByTagName('BranchDisruption').length > 0) {
+                var disrupts = disruptions.getElementsByTagName('BranchDisruption');
+                var disobj = [];
+                for (var j = 0;j < disrupts.length; j++) {
+                    var dis = {};
+                    dis.from = disrupts[j].getElementsByTagName('StationFrom')[0].getAttribute('Name');
+                    dis.to = disrupts[j].getElementsByTagName('StationTo')[0].getAttribute('Name');
+                    dis.status = disrupts[j].getElementsByTagName('Status')[0].getAttribute('Description');
+                    dis.class = disrupts[j].getElementsByTagName('Status')[0].getAttribute('CssClass');
+                    disobj.push(dis);
+                }
+                line.disruptions = disobj;
+            }
+            line.name = ls.getElementsByTagName('Line')[0].getAttribute('Name');
+            line.class = ls.getElementsByTagName('Status')[0].getAttribute('CssClass');
+            line.nameclass = line.name.toLowerCase().replace(/ /g,"");
+            line.status = ls.getElementsByTagName('Status')[0].getAttribute('Description');
+            this.lines.push(line);
+        }
+      }
+
+    });
+  </script>
+</polymer-element>
