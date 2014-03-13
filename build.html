@@ -416,7 +416,7 @@ license that can be found in the LICENSE file.
 
 
 
-<polymer-element name="polymer-tfl-status" constructor="TflStatusElement" attributes="refresh width height" assetpath="../app/elements/">
+<polymer-element name="polymer-tfl-status" constructor="TflStatusElement" attributes="url refresh width height" assetpath="../app/elements/">
   <template>
     <style>
       /* styles for the custom element itself - lowest specificity */
@@ -521,7 +521,7 @@ license that can be found in the LICENSE file.
     .dlr                        {color: #FFF;  		background: #00BBB4;}
     .overground			{color: #FFF;  		background: #F86C00;}
     </style>
-    <polymer-ajax id="status_data" url="LineStatus.xml" auto="true" handleas="xml" response="{{data}}" on-polymer-response="{{responseHandler}}"></polymer-ajax>
+    <polymer-ajax id="status_data" url="{{url}}" auto="true" handleas="xml" response="{{data}}" on-polymer-response="{{responseHandler}}"></polymer-ajax>
     <div id="container" class="container">
         <ul class="lines">
             <template id="line" repeat="{{line in lines}}">
@@ -548,6 +548,7 @@ license that can be found in the LICENSE file.
     Polymer('polymer-tfl-status', {
       //applyAuthorStyles: true,
       //resetStyleInheritance: true,
+      url: 'LineStatus.xml',
       data: null,
       lines: [],
       refresh: 3000,
@@ -615,7 +616,7 @@ license that can be found in the LICENSE file.
                     <h4>The Component</h4>
                     <p> 
                      
-                        <polymer-tfl-status refresh="5000"></polymer-tfl-status>
+                        <polymer-tfl-status refresh="5000" url="LineStatus.xml"></polymer-tfl-status>
                 
                     </p>
 
