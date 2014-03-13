@@ -3,7 +3,9 @@
 
 This is a Web Component that uses [Polymer](http://www.polymer-project.org/) to create it and to provide a fallback in case the browser doesn't suppoer web components.
 
-It provides a compnent that fetches the Tube Status updates with everything necessary encapsulated on one plave.
+It provides a compnent that fetches the Tube Status updates with everything necessary encapsulated on one place.
+
+You can find a working demo here: http://beldar.github.io/polymer-tfl-status/
 
 To know more about web components [there](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/) [are](http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom/) [tons](http://css-tricks.com/modular-future-web-components/) of [resources](https://www.google.co.uk/search?q=web+components) available.
 
