@@ -65,3 +65,30 @@ You can also define a with and height:
 
     <polymer-tfl-status refresh="5000" width="300px" height="500px"></polymer-tfl-status>
     
+Attributes summary
+-----------
+
+| Attribute | Functionality                        | Default        |
+|-----------|--------------------------------------|----------------|
+| refresh   | Defines the rate of the data refresh | 3000ms         |
+| width     | Defines the component width          | 100%           |
+| height    | Defines the component height         | auto           |
+| url       | Defines the url to get the data from | LineStatus.xml |
+
+Events and API
+------------
+The components fires an event called `line-clicked` when the user clicks a Tube line and returns the data from the line, there's an example of how to use this on the index.html, which is:
+
+    <script>
+        document.addEventListener('WebComponentsReady', function() {
+            var el = document.getElementsByTagName('polymer-tfl-status')[0];
+            el.addEventListener('line-clicked', function(e){
+                console.log(e.type, e.detail.line);
+            });
+        });
+    </script>
+    
+For now the element has only one method api which is `stop()` that stops the refreshing of the component and it stops requesting for more data:
+
+    var el = document.getElementsByTagName('polymer-tfl-status')[0];
+    el.stop();
