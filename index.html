@@ -55,7 +55,10 @@
 
       <script>
         document.addEventListener('WebComponentsReady', function() {
-            // Perform some behaviour
+            var el = document.getElementsByTagName('polymer-tfl-status')[0];
+            el.addEventListener('line-clicked', function(e){
+                console.log(e.type, e.detail.line);
+            });
         });
       </script>
           

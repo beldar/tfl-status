@@ -476,6 +476,7 @@ license that can be found in the LICENSE file.
         transition: opacity 1s;
         -webkit-transition: opacity 1s;
         border: 1px solid rgb(239, 74, 74);
+        height: auto;
       }
       ul.lines ul.line-disruptions li {
           height: auto;
@@ -487,10 +488,10 @@ license that can be found in the LICENSE file.
       .DisruptedService {
           color: rgb(239, 74, 74);
       }
-      .line-status.DisruptedService {
+      .hasDisruption .line-status {
           cursor:pointer;
       }
-      .line-status.DisruptedService:after {
+      .hasDisruption .line-status:after {
           content: "";
           position:absolute;
           top: 50%;
@@ -502,7 +503,7 @@ license that can be found in the LICENSE file.
           border-width: 8.7px 5px 0 5px;
           border-color: rgb(239, 74, 74) transparent transparent transparent;
       }
-      .line.DisruptedService:hover > ul.line-disruptions {
+      .line.hasDisruption:hover > ul.line-disruptions {
           opacity: 1;
           z-index: 10;
       }
@@ -525,7 +526,7 @@ license that can be found in the LICENSE file.
     <div id="container" class="container">
         <ul class="lines">
             <template id="line" repeat="{{line in lines}}">
-                <li class="line {{line.class}}">
+                <li on-tap="{{tapHandler}}" class="line {{line.class}} {{line.hasDisruption}}">
                     <div class="line-label">
                         <span class="line-name {{line.nameclass}}">
                             {{line.name}}
@@ -534,11 +535,13 @@ license that can be found in the LICENSE file.
                             {{line.status}}
                         </span>
                     </div>
-                    <ul class="line-disruptions">
-                        <template id="disruption" repeat="{{disruption in line.disruptions}}">
-                            <li class="line-disruption {{disruption.class}}">{{disruption.from}} to {{disruption.to}}: {{disruption.status}}</li>
-                        </template>
-                    </ul>
+                    <template id="disruptions" bind="" if="{{line.disruptions.length}}">
+                        <ul class="line-disruptions">
+                            <template id="disruption" repeat="{{disruption in line.disruptions}}">
+                                <li class="line-disruption {{disruption.class}}">{{disruption.from}} to {{disruption.to}}: {{disruption.status}}</li>
+                            </template>
+                        </ul>
+                    </template>
                 </li>
             </template>
         </ul>
@@ -570,6 +573,11 @@ license that can be found in the LICENSE file.
           clearInterval(this.interval);
       },
               
+      tapHandler: function(e) {
+        var line = e.currentTarget.templateInstance.model.line;
+        this.fire('line-clicked', {line: line});
+      },
+              
       responseHandler: function(e) {
         this.lines = [];
         var lineStatus = this.data.getElementsByTagName('LineStatus');
@@ -577,6 +585,7 @@ license that can be found in the LICENSE file.
         for (var i = 0; i<lineStatus.length;i++) {
             var ls = lineStatus[i];
             var line = {};
+            line.hasDisruption = false;
             var disruptions = ls.getElementsByTagName('BranchDisruptions')[0];
             if (disruptions.getElementsByTagName('BranchDisruption').length > 0) {
                 var disrupts = disruptions.getElementsByTagName('BranchDisruption');
@@ -590,6 +599,7 @@ license that can be found in the LICENSE file.
                     disobj.push(dis);
                 }
                 line.disruptions = disobj;
+                line.hasDisruption = 'hasDisruption';
             }
             line.name = ls.getElementsByTagName('Line')[0].getAttribute('Name');
             line.class = ls.getElementsByTagName('Status')[0].getAttribute('CssClass');
@@ -640,7 +650,10 @@ license that can be found in the LICENSE file.
 
       <script>
         document.addEventListener('WebComponentsReady', function() {
-            // Perform some behaviour
+            var el = document.getElementsByTagName('polymer-tfl-status')[0];
+            el.addEventListener('line-clicked', function(e){
+                console.log(e.type, e.detail.line);
+            });
         });
       </script>
           
