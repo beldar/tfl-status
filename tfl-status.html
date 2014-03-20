@@ -1,7 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
 <link rel="import" href="../bower_components/polymer-ajax/polymer-ajax.html">
-<polymer-element name="polymer-tfl-status"  constructor="TflStatusElement" attributes="url refresh width height">
+<polymer-element name="tfl-status"  constructor="TflStatusElement" attributes="url refresh width height">
   <template>
     <style>
       /* styles for the custom element itself - lowest specificity */
@@ -11,26 +11,26 @@
       :host(.different) { } 
       */
       .container {
-            width: 100%;
-            padding: 0;
+          width: 100%;
+          padding: 0;
       }
       ul {
-            padding: 0;
-            margin: 0;
-            list-style: none;
-            display: block;
-            height: 100%;
+          padding: 0;
+          margin: 0;
+          list-style: none;
+          display: block;
+          height: 100%;
       }
       ul li {
-            display: table;
-            height: 7.69%;
-            width: 100%;
-            border-bottom: 1px solid #eee;
-            -webkit-transition: all 1s;
-            -moz-transition: all 1s;
-            transition: all 1s;
-            color: #565656;
-            position: relative;
+          display: table;
+          height: 7.69%;
+          width: 100%;
+          border-bottom: 1px solid #eee;
+          -webkit-transition: all 1s;
+          -moz-transition: all 1s;
+          transition: all 1s;
+          color: #565656;
+          position: relative;
       }
       ul.lines li.line .line-label {
           display: table-cell;
@@ -47,50 +47,66 @@
           padding-left: 1em;
           position: relative;
       }
-      ul.lines ul.line-disruptions {
-        position: absolute;
-        left: 50%;
-        width: 50%;
-        top: 2.5em;
-        background: white;
-        display: block;
-        margin: 0;
-        padding: 0;
-        list-style-type: none;
-        opacity: 0;
-        transition: opacity 1s;
-        -webkit-transition: opacity 1s;
-        border: 1px solid rgb(239, 74, 74);
-        height: auto;
-      }
-      ul.lines ul.line-disruptions li {
-          height: auto;
-          padding: 10px;
-      }
       .GoodService {
           color: rgb(122, 139, 19);
       }
       .DisruptedService {
           color: rgb(239, 74, 74);
       }
-      .hasDisruption .line-status {
+      .hasDetail .line-status {
           cursor:pointer;
       }
-      .hasDisruption .line-status:after {
-          content: "";
-          position:absolute;
-          top: 50%;
-          right: 5px;
-          margin-top: -5px;
-          width: 0px;
-          height: 0px;
-          border-style: solid;
-          border-width: 8.7px 5px 0 5px;
-          border-color: rgb(239, 74, 74) transparent transparent transparent;
+      .hasDetail .line-status i:after {
+          content: "\26A0";
+          font-style: normal;
+          font-size: 1.2em;
+          line-height: 1em;
+          display: inline-block;
+          vertical-align: bottom;
+          margin-bottom: 7px;
+          color: red;
+          margin-left: 10px;
       }
-      .line.hasDisruption:hover > ul.line-disruptions {
+      .line-status:hover > small {
           opacity: 1;
-          z-index: 10;
+      }
+      .line-status small {
+          opacity:0;
+          position: absolute;
+          left: 55%;
+          width: 300px;
+          padding: 10px;
+          top: -90%;
+          color: white;
+          background: #cf6767;
+          border: 4px solid #f50000;
+          line-height: 1.2em;
+          border-radius: 10px;
+          transition: opacity .5s;
+          -webkit-transition: opacity .5s;
+      }
+      .line-status small:after, .line-status small:before {
+          right: 100%;
+          top: 50%;
+          border: solid transparent;
+          content: " ";
+          height: 0;
+          width: 0;
+          position: absolute;
+          pointer-events: none;
+      }
+
+      .line-status small:after {
+          border-color: rgba(207, 103, 103, 0);
+          border-right-color: #cf6767;
+          border-width: 10px;
+          margin-top: -10px;
+      }
+      .line-status small:before {
+          border-color: rgba(245, 0, 0, 0);
+          border-right-color: #f50000;
+          border-width: 16px;
+          margin-top: -16px;
       }
     .bakerloo			{color: #FFF;  		background: #AE6118;}
     .central			{color: #FFF;  		background: #E41F1F;}
@@ -110,44 +126,42 @@
     <polymer-ajax id="status_data"
                   url="{{url}}"
                   auto="true"
-                  handleAs="xml"
+                  handleAs="json"
                   response="{{data}}"
                   on-polymer-response="{{responseHandler}}"></polymer-ajax>
     <div id="container" class="container">
+        <small>Last updated: {{lastUpdated}}</small>
         <ul class="lines">
             <template id="line" repeat="{{line in lines}}">
-                <li on-tap="{{tapHandler}}" class="line {{line.class}} {{line.hasDisruption}}">
+                <li on-tap="{{tapHandler}}" class="line {{line.Status.CssClass}} {{line.hasDetail}}">
                     <div class="line-label">
-                        <span class="line-name {{line.nameclass}}">
-                            {{line.name}}
+                        <span class="line-name {{line.Line.CssName}}">
+                            {{line.Line.Name}}
                         </span>
-                        <span class="line-status {{line.class}}">
-                            {{line.status}}
+                        <span class="line-status {{line.StatusCssClass}}">
+                            {{line.Status.Description}} <i></i>
+                            <template if="{{line.StatusDetails}}">
+                                <small>{{line.StatusDetails}}</small>
+                            </template>
                         </span>
                     </div>
-                    <template id="disruptions" bind if="{{line.disruptions.length}}">
-                        <ul class="line-disruptions">
-                            <template id="disruption" repeat="{{disruption in line.disruptions}}">
-                                <li class="line-disruption {{disruption.class}}">{{disruption.from}} to {{disruption.to}}: {{disruption.status}}</li>
-                            </template>
-                        </ul>
-                    </template>
                 </li>
             </template>
         </ul>
     </div>
   </template>
   <script>
-    Polymer('polymer-tfl-status', {
+    Polymer('tfl-status', {
       //applyAuthorStyles: true,
       //resetStyleInheritance: true,
-      url: 'LineStatus.xml',
+      url: 'http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20xml%20where%20url%3D%22http%3A%2F%2Fcloud.tfl.gov.uk%2FTrackerNet%2FLineStatus%22&format=json',
       data: null,
       lines: [],
       refresh: 3000,
       interval: null,
       width: '100%',
       height: 'auto',
+      lastUpdated: 'Not updated',
       // element is fully prepared
       ready: function(){
           var that = this;
@@ -169,7 +183,15 @@
       },
               
       responseHandler: function(e) {
-        this.lines = [];
+        console.log('Updated!');
+        this.lastUpdated = new Date();
+        this.lines = this.data.query.results.ArrayOfLineStatus.LineStatus;
+        
+        this.lines.forEach(function(line,i) {
+            line.Line.CssName = line.Line.Name.toLowerCase().replace(/ /g,"");
+            line.hasDetail = line.StatusDetails !== '' ? 'hasDetail' : '';
+        });
+        /*this.lines = [];
         var lineStatus = this.data.getElementsByTagName('LineStatus');
         //console.log(lineStatus);
         for (var i = 0; i<lineStatus.length;i++) {
@@ -196,7 +218,7 @@
             line.nameclass = line.name.toLowerCase().replace(/ /g,"");
             line.status = ls.getElementsByTagName('Status')[0].getAttribute('Description');
             this.lines.push(line);
-        }
+        }*/
       }
 
     });

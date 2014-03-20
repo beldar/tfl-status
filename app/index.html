@@ -33,7 +33,7 @@
                     <h4>The Component</h4>
                     <p> 
                      
-                        <polymer-tfl-status refresh="5000" url="LineStatus.xml"></polymer-tfl-status>
+                        <tfl-status refresh="50000"></tfl-status>
                 
                     </p>
 
@@ -57,7 +57,7 @@
 
       <script>
         document.addEventListener('WebComponentsReady', function() {
-            var el = document.getElementsByTagName('polymer-tfl-status')[0];
+            var el = document.getElementsByTagName('tfl-status')[0];
             el.addEventListener('line-clicked', function(e){
                 console.log(e.type, e.detail.line);
             });

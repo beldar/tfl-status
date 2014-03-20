@@ -1,7 +1,7 @@
 {
-  "name": "polymer-tfl-status",
-  "version": "0.0.1",
-  "homepage": "https://github.com/beldar/polymer-tfl-status",
+  "name": "tfl-status",
+  "version": "0.1.1",
+  "homepage": "https://github.com/beldar/tfl-status",
   "autors" : [
     "Martí Planellas <beldar.cat@gmail.com>"
   ],
