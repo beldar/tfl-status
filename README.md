@@ -7,7 +7,7 @@ It provides a component that fetches the Tube Status updates with everything nec
 
 It uses a YQL url to fetch the data XML, so it can be real time fetched with javascript.
 
-You can find a working demo here: http://beldar.github.io/tfl-status/
+You can find a working demo here: http://acknet.github.io/tfl-status-component/
 
 To know more about web components [there](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/) [are](http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom/) [tons](http://css-tricks.com/modular-future-web-components/) of [resources](https://www.google.co.uk/search?q=web+components) available.
 
