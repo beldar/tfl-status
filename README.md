@@ -7,7 +7,7 @@ It provides a component that fetches the Tube Status updates with everything nec
 
 It uses a YQL url to fetch the data XML, so it can be real time fetched with javascript.
 
-You can find a working demo here: http://acknet.github.io/tfl-status-component/
+You can find a working demo here: http://beldar.github.io/tfl-status/
 
 To know more about web components [there](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/) [are](http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom/) [tons](http://css-tricks.com/modular-future-web-components/) of [resources](https://www.google.co.uk/search?q=web+components) available.
 
@@ -56,7 +56,7 @@ Then, just below import the html of the element:
     
 And finally place the element where you want it using the attributes that you need:
 
-    <polymer-tfl-status refresh="5000" url="LineStatus.xml"></polymer-tfl-status>
+    <polymer-tfl-status refresh="5000"></polymer-tfl-status>
     
 The refresh attribute defines how often the element should refresh the data feed in miliseconds. 
 
