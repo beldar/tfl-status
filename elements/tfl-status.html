@@ -191,34 +191,6 @@
             line.Line.CssName = line.Line.Name.toLowerCase().replace(/ /g,"");
             line.hasDetail = line.StatusDetails !== '' ? 'hasDetail' : '';
         });
-        /*this.lines = [];
-        var lineStatus = this.data.getElementsByTagName('LineStatus');
-        //console.log(lineStatus);
-        for (var i = 0; i<lineStatus.length;i++) {
-            var ls = lineStatus[i];
-            var line = {};
-            line.hasDisruption = false;
-            var disruptions = ls.getElementsByTagName('BranchDisruptions')[0];
-            if (disruptions.getElementsByTagName('BranchDisruption').length > 0) {
-                var disrupts = disruptions.getElementsByTagName('BranchDisruption');
-                var disobj = [];
-                for (var j = 0;j < disrupts.length; j++) {
-                    var dis = {};
-                    dis.from = disrupts[j].getElementsByTagName('StationFrom')[0].getAttribute('Name');
-                    dis.to = disrupts[j].getElementsByTagName('StationTo')[0].getAttribute('Name');
-                    dis.status = disrupts[j].getElementsByTagName('Status')[0].getAttribute('Description');
-                    dis.class = disrupts[j].getElementsByTagName('Status')[0].getAttribute('CssClass');
-                    disobj.push(dis);
-                }
-                line.disruptions = disobj;
-                line.hasDisruption = 'hasDisruption';
-            }
-            line.name = ls.getElementsByTagName('Line')[0].getAttribute('Name');
-            line.class = ls.getElementsByTagName('Status')[0].getAttribute('CssClass');
-            line.nameclass = line.name.toLowerCase().replace(/ /g,"");
-            line.status = ls.getElementsByTagName('Status')[0].getAttribute('Description');
-            this.lines.push(line);
-        }*/
       }
 
     });
